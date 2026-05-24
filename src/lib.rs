@@ -3,12 +3,13 @@
 //! A Rust implementation of a SQL-92 compliant database system.
 
 pub mod auth;
+pub mod catalog;
 pub mod error;
 pub mod executor;
 pub mod lexer;
 pub mod monitoring;
-pub mod optimizer;
 pub mod network;
+pub mod optimizer;
 pub mod parser;
 pub mod planner;
 pub mod storage;
@@ -61,7 +62,7 @@ mod tests {
     #[test]
     fn test_storage() {
         let page = storage::Page::new(1);
-        assert_eq!(page.page_id(), 1);
+        assert_eq!(page.page_id, 1);
     }
 
     #[test]
@@ -98,3 +99,8 @@ mod tests {
         std::fs::remove_file(path).ok();
     }
 }
+
+// PR practice function for Week 10 
+pub fn test_pr() -> &'static str { 
+    "PR workflow is working!" 
+ }
