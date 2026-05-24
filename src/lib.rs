@@ -3,12 +3,13 @@
 //! A Rust implementation of a SQL-92 compliant database system.
 
 pub mod auth;
+pub mod catalog;
 pub mod error;
 pub mod executor;
 pub mod lexer;
 pub mod monitoring;
-pub mod optimizer;
 pub mod network;
+pub mod optimizer;
 pub mod parser;
 pub mod planner;
 pub mod storage;
