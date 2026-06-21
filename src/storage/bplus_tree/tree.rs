@@ -10,6 +10,7 @@ use serde::{Deserialize, Serialize};
 const MAX_KEYS: usize = 64;
 
 /// Minimum keys per node before merge/redistribute
+#[allow(dead_code)]
 const MIN_KEYS: usize = 16;
 
 /// B+ Tree index - In-memory B+ Tree index with serialization support
@@ -65,7 +66,7 @@ impl BPlusTree {
                 self.len += 1;
                 Some(Node::Internal(internal))
             }
-            Some(Node::StringLeaf(_)) | Some(Node::StringInternal(_)) => {
+            Some(Node::StringLeaf(_) | Node::StringInternal(_)) => {
                 // Can't mix integer and string keys in same tree
                 None
             }
@@ -189,11 +190,7 @@ impl BPlusTree {
 
         match &mut internal.children[pos] {
             NodeBoxString::StringLeaf(child) => {
-                if child.keys.len() < MAX_KEYS {
-                    child.insert_sorted(key, value);
-                } else {
-                    child.insert_sorted(key, value);
-                }
+                child.insert_sorted(key, value);
             }
             NodeBoxString::StringInternal(child) => {
                 self.insert_into_string_internal(child, key, value);
@@ -245,12 +242,7 @@ impl BPlusTree {
 
         match &mut internal.children[pos] {
             NodeBox::Leaf(child) => {
-                if child.keys.len() < MAX_KEYS {
-                    child.insert_sorted(key, value);
-                } else {
-                    // Split leaf - this is simplified, just add without full split
-                    child.insert_sorted(key, value);
-                }
+                child.insert_sorted(key, value);
             }
             NodeBox::Internal(child) => {
                 self.insert_into_internal(child, key, value);

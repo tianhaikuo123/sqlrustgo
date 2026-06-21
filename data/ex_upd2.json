@@ -1,0 +1,33 @@
+{
+  "name": "ex_upd2",
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "INTEGER",
+      "nullable": true
+    },
+    {
+      "name": "status",
+      "data_type": "TEXT",
+      "nullable": true
+    }
+  ],
+  "rows": [
+    [
+      {
+        "Integer": 1
+      },
+      {
+        "Text": "inactive"
+      }
+    ],
+    [
+      {
+        "Integer": 2
+      },
+      {
+        "Text": "inactive"
+      }
+    ]
+  ]
+}

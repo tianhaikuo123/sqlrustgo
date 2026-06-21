@@ -9,6 +9,7 @@ use std::path::PathBuf;
 /// 磁盘管理器 
 pub struct DiskManager { 
     file: File, 
+    #[allow(dead_code)]
     file_path: PathBuf, 
     reads: u64, 
     writes: u64, 
@@ -18,11 +19,12 @@ impl DiskManager {
     /// 打开或创建数据文件 
     pub fn new(path: &str) -> Result<Self, String> { 
         let file_path = PathBuf::from(path); 
-        let file = OpenOptions::new() 
-            .read(true) 
-            .write(true) 
-            .create(true) 
-            .open(&file_path) 
+        let file = OpenOptions::new()
+            .read(true)
+            .write(true)
+            .create(true)
+            .truncate(false)
+            .open(&file_path)
             .map_err(|e| format!("Failed to open file: {}", e))?; 
         
         Ok(DiskManager { 

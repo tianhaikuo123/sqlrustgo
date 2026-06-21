@@ -36,19 +36,19 @@ impl StorageEngine {
     /// 读取页（优先从缓冲区读） 
     pub fn read_page(&mut self, page_id: PageId) -> Result<&mut Page, String> { 
         // 如果缓冲区已有，直接返回 
-        if let Some(page) = self.buffer_pool.get_page(page_id) { 
-            return Ok(page); 
-        } 
-        
+        if self.buffer_pool.has_page(page_id) {
+            return self.buffer_pool.get_page(page_id)
+                .ok_or_else(|| "Failed to get cached page".to_string());
+        }
+            
         // 从磁盘读取 
         let mut page = self.disk.read_page(page_id)?; 
         page.pin(); 
         self.buffer_pool.add_page(page)?; 
-        
-        self.buffer_pool 
-            .get_page(page_id) 
+            
+        self.buffer_pool.get_page(page_id)
             .ok_or_else(|| "Failed to load page".to_string()) 
-    } 
+    }
 
     /// 写入页（标记为脏） 
     pub fn write_page(&mut self, page_id: PageId, offset: usize, data: &[u8]) -> Result<(), String> { 
@@ -65,8 +65,8 @@ impl StorageEngine {
     /// 刷新所有脏页到磁盘 
     pub fn flush(&mut self) -> Result<(), String> { 
         // 将所有脏页写回磁盘 
-        for page_id in self.buffer_pool.pages.keys() { 
-            if let Some(page) = self.buffer_pool.get_page(*page_id) { 
+        for page_id in self.buffer_pool.page_ids() { 
+            if let Some(page) = self.buffer_pool.get_page(page_id) { 
                 if page.is_dirty { 
                     self.disk.write_page(page)?; 
                 } 

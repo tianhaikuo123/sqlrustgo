@@ -55,11 +55,13 @@ pub trait Array: Send + Sync {
 
 /// IntArray for integer values
 #[derive(Clone)]
+#[allow(dead_code)]
 pub struct IntArray {
     values: Vec<i64>,
     nulls: Vec<bool>,
 }
 
+#[allow(dead_code)]
 impl IntArray {
     pub fn new(values: Vec<i64>, nulls: Vec<bool>) -> Self {
         Self { values, nulls }
@@ -112,11 +114,13 @@ impl Array for IntArray {
 
 /// FloatArray for floating point values
 #[derive(Clone)]
+#[allow(dead_code)]
 pub struct FloatArray {
     values: Vec<f64>,
     nulls: Vec<bool>,
 }
 
+#[allow(dead_code)]
 impl FloatArray {
     pub fn new(values: Vec<f64>, nulls: Vec<bool>) -> Self {
         Self { values, nulls }
@@ -162,6 +166,7 @@ pub struct StringArray {
     nulls: Vec<bool>,
 }
 
+#[allow(dead_code)]
 impl StringArray {
     pub fn new(values: Vec<String>, nulls: Vec<bool>) -> Self {
         Self { values, nulls }
@@ -207,6 +212,7 @@ pub struct BooleanArray {
     nulls: Vec<bool>,
 }
 
+#[allow(dead_code)]
 impl BooleanArray {
     pub fn new(values: Vec<bool>, nulls: Vec<bool>) -> Self {
         Self { values, nulls }
@@ -250,6 +256,7 @@ pub mod expression {
     use super::*;
 
     /// Compare two arrays element-wise
+    #[allow(dead_code)]
     pub fn compare_ints(left: &IntArray, right: &IntArray, op: &str) -> BooleanArray {
         let len = left.len().max(right.len());
         let mut results = Vec::with_capacity(len);
@@ -271,6 +278,7 @@ pub mod expression {
     }
 
     /// Compare integer with constant
+    #[allow(dead_code)]
     pub fn compare_int_constant(arr: &IntArray, constant: i64, op: &str) -> BooleanArray {
         let mut results = Vec::with_capacity(arr.len());
         for i in 0..arr.len() {
@@ -291,6 +299,7 @@ pub mod expression {
 
     /// Filter RecordBatch using boolean array (simplified version)
     /// Note: Full type-specific filtering requires Any downcasting
+    #[allow(dead_code)]
     pub fn filter_batch(batch: &RecordBatch, _filter: &BooleanArray) -> RecordBatch {
         batch.clone()
     }
@@ -302,12 +311,16 @@ pub mod operators {
 
     /// Vectorized Table Scan operator
     /// Scans table data in batches for efficient processing
+    #[allow(dead_code)]
     pub struct VectorizedTableScan {
+        #[allow(dead_code)]
         table_name: String,
+        #[allow(dead_code)]
         batch_size: usize,
     }
 
-    impl VectorizedTableScan {
+    #[allow(dead_code)]
+impl VectorizedTableScan {
         pub fn new(table_name: &str, batch_size: usize) -> Self {
             Self {
                 table_name: table_name.to_string(),
@@ -346,7 +359,8 @@ pub mod operators {
         predicate: Box<dyn Fn(&RecordBatch) -> BooleanArray + Send + Sync>,
     }
 
-    impl VectorizedFilter {
+    #[allow(dead_code)]
+impl VectorizedFilter {
         pub fn new<F>(predicate: F) -> Self
         where
             F: Fn(&RecordBatch) -> BooleanArray + Send + Sync + 'static,
@@ -369,7 +383,8 @@ pub mod operators {
         columns: Vec<usize>,
     }
 
-    impl VectorizedProject {
+    #[allow(dead_code)]
+impl VectorizedProject {
         pub fn new(columns: Vec<usize>) -> Self {
             Self { columns }
         }
@@ -387,11 +402,13 @@ pub mod operators {
     }
 
     /// Hash Join operator for batch processing
+    #[allow(dead_code)]
     pub struct VectorizedHashJoin {
         join_type: crate::planner::JoinType,
     }
 
-    impl VectorizedHashJoin {
+    #[allow(dead_code)]
+impl VectorizedHashJoin {
         pub fn new(join_type: crate::planner::JoinType) -> Self {
             Self { join_type }
         }

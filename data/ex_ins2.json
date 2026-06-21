@@ -1,5 +1,5 @@
 {
-  "name": "test",
+  "name": "ex_ins2",
   "columns": [
     {
       "name": "id",
@@ -7,8 +7,8 @@
       "nullable": true
     },
     {
-      "name": "value",
-      "data_type": "INTEGER",
+      "name": "name",
+      "data_type": "TEXT",
       "nullable": true
     }
   ],
@@ -18,7 +18,15 @@
         "Integer": 1
       },
       {
-        "Integer": 20
+        "Text": "Alice"
+      }
+    ],
+    [
+      {
+        "Integer": 2
+      },
+      {
+        "Text": "Bob"
       }
     ]
   ]

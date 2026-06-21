@@ -1,0 +1,16 @@
+{
+  "name": "ex_users",
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "INTEGER",
+      "nullable": true
+    },
+    {
+      "name": "name",
+      "data_type": "TEXT",
+      "nullable": true
+    }
+  ],
+  "rows": []
+}

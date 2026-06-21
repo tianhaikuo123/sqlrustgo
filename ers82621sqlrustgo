@@ -1,0 +1,185 @@
+[33mcommit 5edeb484342a56a186631ef4fbf05999e0b271cb[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/pr-practice[m[33m, [m[1;31morigin/feature/pr-practice[m[33m)[m
+Author: zhaotianhai <18661339182@163.com>
+Date:   Sun May 10 16:08:18 2026 +0800
+
+    feat: add simple function for PR practice
+
+[1mdiff --git a/.claude/CLAUDE.md b/.claude/CLAUDE.md[m
+[1mnew file mode 100644[m
+[1mindex 0000000..f0f633d[m
+[1m--- /dev/null[m
+[1m+++ b/.claude/CLAUDE.md[m
+[36m@@ -0,0 +1,68 @@[m
+[32m+[m[32m# CLAUDE.md[m
+[32m+[m
+[32m+[m[32mThis file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.[m
+[32m+[m
+[32m+[m[32m## Project Overview[m
+[32m+[m
+[32m+[m[32mSQLRustGo is a Rust implementation of a relational database system supporting SQL-92 subset. Built from scratch with a modern layered architecture.[m
+[32m+[m
+[32m+[m[32m## Common Commands[m
+[32m+[m
+[32m+[m[32m```bash[m
+[32m+[m[32m# Build[m
+[32m+[m[32mcargo build --all-features[m
+[32m+[m
+[32m+[m[32m# Run tests[m
+[32m+[m[32mcargo test --all-features[m
+[32m+[m
+[32m+[m[32m# Run a single test[m
+[32m+[m[32mcargo test test_name --all-features[m
+[32m+[m
+[32m+[m[32m# Lint with clippy[m
+[32m+[m[32mcargo clippy --all-features -- -D warnings[m
+[32m+[m
+[32m+[m[32m# Format check[m
+[32m+[m[32mcargo fmt --check --all[m
+[32m+[m
+[32m+[m[32m# Doc tests[m
+[32m+[m[32mcargo test --doc[m
+[32m+[m
+[32m+[m[32m# Run REPL[m
+[32m+[m[32mcargo run --bin sqlrustgo[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m## Architecture[m
+[32m+[m
+[32m+[m[32m```[m
+[32m+[m[32m┌─────────────────────────────────────┐[m
+[32m+[m[32m│           main.rs (REPL)             │[m
+[32m+[m[32m├─────────────────────────────────────┤[m
+[32m+[m[32m│           executor/                 │  ← Query execution[m
+[32m+[m[32m├─────────────────────────────────────┤[m
+[32m+[m[32m│           parser/                    │  ← SQL → AST[m
+[32m+[m[32m│           lexer/                    │  ← SQL → Tokens[m
+[32m+[m[32m├─────────────────────────────────────┤[m
+[32m+[m[32m│           storage/                   │  ← Page, BufferPool, B+ Tree[m
+[32m+[m[32m├─────────────────────────────────────┤[m
+[32m+[m[32m│         transaction/                 │  ← WAL, TxManager[m
+[32m+[m[32m├─────────────────────────────────────┤[m
+[32m+[m[32m│           network/                   │  ← TCP server/client[m
+[32m+[m[32m├─────────────────────────────────────┤[m
+[32m+[m[32m│           types/                     │  ← Value, SqlError[m
+[32m+[m[32m└─────────────────────────────────────┘[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m## Key Modules[m
+[32m+[m
+[32m+[m[32m| Module | Purpose |[m
+[32m+[m[32m|--------|---------|[m
+[32m+[m[32m| `lexer` | Tokenizes SQL input |[m
+[32m+[m[32m| `parser` | Parses tokens into Statement AST |[m
+[32m+[m[32m| `storage` | Page management, BufferPool (LRU), B+ Tree indexing |[m
+[32m+[m[32m| `executor` | Executes SQL statements |[m
+[32m+[m[32m| `transaction` | Write-Ahead Log, BEGIN/COMMIT/ROLLBACK |[m
+[32m+[m[32m| `network` | TCP server/client with MySQL-style protocol |[m
+[32m+[m
+[32m+[m[32m## Rust Edition[m
+[32m+[m
+[32m+[m[32mUses Rust edition 2024 with Tokio async runtime.[m
+[1mdiff --git a/.claude/claude_desktop_config.json b/.claude/claude_desktop_config.json[m
+[1mnew file mode 100644[m
+[1mindex 0000000..cb51b8c[m
+[1m--- /dev/null[m
+[1m+++ b/.claude/claude_desktop_config.json[m
+[36m@@ -0,0 +1,32 @@[m
+[32m+[m[32m{[m
+[32m+[m[32m  "project": {[m
+[32m+[m[32m    "name": "SQLRustGo",[m
+[32m+[m[32m    "description": "Rust implementation of SQL-92 compliant database",[m
+[32m+[m[32m    "type": "rust"[m
+[32m+[m[32m  },[m
+[32m+[m[32m  "tools": {[m
+[32m+[m[32m    "shell": {[m
+[32m+[m[32m      "enabled": true[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "tdd": {[m
+[32m+[m[32m      "enabled": true,[m
+[32m+[m[32m      "framework": "cargo"[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "coverage": {[m
+[32m+[m[32m      "threshold": 80,[m
+[32m+[m[32m      "fail_below": true[m
+[32m+[m[32m    }[m
+[32m+[m[32m  },[m
+[32m+[m[32m  "commands": {[m
+[32m+[m[32m    "build": "cargo build",[m
+[32m+[m[32m    "test": "cargo test --all-features",[m
+[32m+[m[32m    "test-coverage": "cargo llvm-cov --all-features --all --workspace",[m
+[32m+[m[32m    "clippy": "cargo clippy --all-features -- -D warnings",[m
+[32m+[m[32m    "format": "cargo fmt --all",[m
+[32m+[m[32m    "format-check": "cargo fmt --check --all"[m
+[32m+[m[32m  },[m
+[32m+[m[32m  "git": {[m
+[32m+[m[32m    "commit_style": "conventional",[m
+[32m+[m[32m    "require_tests": true[m
+[32m+[m[32m  }[m
+[32m+[m[32m}[m
+[1mdiff --git a/.github/CODEOWNERS b/.github/CODEOWNERS[m
+[1mnew file mode 100644[m
+[1mindex 0000000..5da3b15[m
+[1m--- /dev/null[m
+[1m+++ b/.github/CODEOWNERS[m
+[36m@@ -0,0 +1,43 @@[m
+[32m+[m[32m# CODEOWNERS - SQLRustGo[m
+[32m+[m[32m#[m
+[32m+[m[32m# This file defines the code owners for each part of the codebase.[m
+[32m+[m[32m# Code owners are automatically requested for review when someone opens[m
+[32m+[m[32m# a pull request that modifies code that they own.[m
+[32m+[m[32m#[m
+[32m+[m[32m# For more information, see:[m
+[32m+[m[32m# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners[m
+[32m+[m
+[32m+[m[32m# Default owners for everything in the repo[m
+[32m+[m[32m* @yinglichina8848[m
+[32m+[m
+[32m+[m[32m# Core modules[m
+[32m+[m[32m/src/executor/ @yinglichina8848[m
+[32m+[m[32m/src/planner/ @yinglichina8848[m
+[32m+[m[32m/src/parser/ @yinglichina8848[m
+[32m+[m[32m/src/lexer/ @yinglichina8848[m
+[32m+[m[32m/src/storage/ @yinglichina8848[m
+[32m+[m[32m/src/network/ @yinglichina8848[m
+[32m+[m[32m/src/transaction/ @yinglichina8848[m
+[32m+[m[32m/src/auth/ @yinglichina8848[m
+[32m+[m[32m/src/types/ @yinglichina8848[m
+[32m+[m
+[32m+[m[32m# Benchmarks[m
+[32m+[m[32m/benches/ @yinglichina8848[m
+[32m+[m
+[32m+[m[32m# Documentation[m
+[32m+[m[32m/docs/ @yinglichina8848[m
+[32m+[m[32m/README.md @yinglichina8848[m
+[32m+[m[32m/CHANGELOG.md @yinglichina8848[m
+[32m+[m
+[32m+[m[32m# Configuration[m
+[32m+[m[32m/Cargo.toml @yinglichina8848[m
+[32m+[m[32m/Cargo.lock @yinglichina8848[m
+[32m+[m[32m/.github/ @yinglichina8848[m
+[32m+[m
+[32m+[m[32m# Tests[m
+[32m+[m[32m/tests/ @yinglichina8848[m
+[32m+[m[32m/src/**/tests.rs @yinglichina8848[m
+[32m+[m[32m/src/**/tests/ @yinglichina8848[m
+[32m+[m
+[32m+[m[32m# CI/CD[m
+[32m+[m[32m/.github/workflows/ @yinglichina8848[m
+[1mdiff --git a/.github/dependabot.yml b/.github/dependabot.yml[m
+[1mnew file mode 100644[m
+[1mindex 0000000..5e655c3[m
+[1m--- /dev/null[m
+[1m+++ b/.github/dependabot.yml[m
+[36m@@ -0,0 +1,10 @@[m
+[32m+[m[32mversion: 2[m
+[32m+[m[32mupdates:[m
+[32m+[m[32m  - package-ecosystem: "cargo"[m
+[32m+[m[32m    directory: "/"[m
+[32m+[m[32m    schedule:[m
+[32m+[m[32m      interval: "weekly"[m
+[32m+[m[32m  - package-ecosystem: "github-actions"[m
+[32m+[m[32m    directory: "/"[m
+[32m+[m[32m    schedule:[m
+[32m+[m[32m      interval: "weekly"[m
+\ No newline at end of file[m
+[1mdiff --

@@ -1,4 +1,4 @@
-//! SQLRustGo Database System Library
+//! `SQLRustGo` Database System Library
 //!
 //! A Rust implementation of a SQL-92 compliant database system.
 

@@ -1,0 +1,25 @@
+{
+  "name": "ex_del1",
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "INTEGER",
+      "nullable": true
+    },
+    {
+      "name": "name",
+      "data_type": "TEXT",
+      "nullable": true
+    }
+  ],
+  "rows": [
+    [
+      {
+        "Integer": 2
+      },
+      {
+        "Text": "Bob"
+      }
+    ]
+  ]
+}

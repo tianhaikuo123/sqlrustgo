@@ -49,6 +49,7 @@ impl Default for WalConfig {
 /// WAL with group commit and buffering
 pub struct WriteAheadLog {
     file: Mutex<File>,
+    #[allow(dead_code)]
     path: String,
     config: WalConfig,
     /// Write buffer
@@ -56,6 +57,7 @@ pub struct WriteAheadLog {
     /// Pending batch for group commit
     pending_batch: Mutex<Vec<u64>>,
     /// Condition variable for signaling
+    #[allow(dead_code)]
     cv: Condvar,
     /// Stats
     stats: Mutex<WalStats>,
@@ -301,6 +303,7 @@ mod tests {
         fs::remove_file(path).ok();
     }
 
+    #[test]
     fn test_wal_append() {
         let path = "/tmp/wal_test_append.log";
         cleanup(path);

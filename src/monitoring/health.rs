@@ -233,7 +233,8 @@ mod tests {
     fn test_health_checker_new() {
         let checker = HealthChecker::new("1.0.0");
         assert_eq!(checker.version(), "1.0.0");
-        assert!(checker.uptime().as_millis() >= 0);
+        // Uptime is always non-negative
+        assert!(checker.uptime().as_nanos() > 0);
     }
 
     #[test]

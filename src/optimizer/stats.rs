@@ -15,7 +15,7 @@
 use std::collections::HashMap;
 use thiserror::Error;
 
-use crate::storage::StorageEngine;
+use crate::storage::engine::StorageEngine;
 use crate::types::Value;
 
 /// Statistics provider error types
@@ -396,7 +396,7 @@ impl StatsCollector for DefaultStatsCollector {
                         // For non-numeric types, just track min/max lexicographically
                         match &min_value {
                             None => min_value = Some(value.clone()),
-                            Some(Value::Text(_)) | Some(Value::Blob(_)) => {
+                            Some(Value::Text(_) | Value::Blob(_)) => {
                                 if value.to_string() < min_value.as_ref().unwrap().to_string() {
                                     min_value = Some(value.clone());
                                 }
@@ -405,7 +405,7 @@ impl StatsCollector for DefaultStatsCollector {
                         }
                         match &max_value {
                             None => max_value = Some(value.clone()),
-                            Some(Value::Text(_)) | Some(Value::Blob(_)) => {
+                            Some(Value::Text(_) | Value::Blob(_)) => {
                                 if value.to_string() > max_value.as_ref().unwrap().to_string() {
                                     max_value = Some(value.clone());
                                 }

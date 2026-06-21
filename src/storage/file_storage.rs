@@ -826,7 +826,7 @@ mod tests {
         let temp_dir = std::env::temp_dir().join("sqlrustgo_test_drop_no");
         let _ = remove_dir_all(&temp_dir);
 
-        let mut storage = FileStorage::new(temp_dir.clone()).unwrap();
+        let storage = FileStorage::new(temp_dir.clone()).unwrap();
 
         // Try to drop index from non-existent table - should return Ok (no-op)
         let result = storage.drop_index("nonexistent", "id");

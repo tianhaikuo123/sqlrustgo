@@ -81,7 +81,7 @@ impl ExecutionEngine {
         &mut self,
         stmt: crate::parser::AnalyzeStatement,
     ) -> SqlResult<ExecutionResult> {
-        let table_name = stmt.table_name.unwrap_or_else(|| "".to_string());
+        let table_name = stmt.table_name.unwrap_or_default();
 
         if table_name.is_empty() {
             return Ok(ExecutionResult {

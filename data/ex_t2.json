@@ -1,0 +1,16 @@
+{
+  "name": "ex_t2",
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "INTEGER",
+      "nullable": true
+    },
+    {
+      "name": "val",
+      "data_type": "TEXT",
+      "nullable": true
+    }
+  ],
+  "rows": []
+}

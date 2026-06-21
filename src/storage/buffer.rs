@@ -106,6 +106,11 @@ impl BufferPool {
     /// 获取缓存统计信息 
     pub fn stats(&self) -> (usize, u64, u64, f64) { 
         (self.pages.len(), self.hits, self.misses, self.hit_rate()) 
+    }
+
+    /// 获取所有缓存页的 ID 
+    pub fn page_ids(&self) -> Vec<PageId> {
+        self.pages.keys().copied().collect()
     } 
 } 
 

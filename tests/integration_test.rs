@@ -42,10 +42,13 @@ fn test_full_insert_flow() {
 
 #[test]
 fn test_full_transaction_flow() {
-    let path = "/tmp/integration_test_wal.log";
-    std::fs::remove_file(path).ok();
+    let path = std::env::temp_dir()
+        .join("integration_test_wal.log")
+        .to_string_lossy()
+        .to_string();
+    std::fs::remove_file(&path).ok();
 
-    let wal = Arc::new(WriteAheadLog::new(path).unwrap());
+    let wal = Arc::new(WriteAheadLog::new(&path).unwrap());
     let tm = TransactionManager::new(wal);
 
     // Begin transaction
@@ -56,7 +59,7 @@ fn test_full_transaction_flow() {
     tm.commit(tx_id).unwrap();
     assert!(!tm.is_active(tx_id));
 
-    std::fs::remove_file(path).ok();
+    std::fs::remove_file(&path).ok();
 }
 
 #[test]
@@ -147,4 +150,71 @@ fn test_full_workflow() {
 
     // Drop
     engine.execute(parse("DROP TABLE test").unwrap()).unwrap();
+}
+
+// ==================== Lexer 端到端集成测试 ====================
+
+#[test]
+fn test_end_to_end_select() {
+    let sql = "SELECT * FROM users";
+    let mut lexer = sqlrustgo::Lexer::new(sql);
+
+    let mut tokens = Vec::new();
+    loop {
+        let token = lexer.next_token();
+        if token == sqlrustgo::Token::Eof {
+            break;
+        }
+        tokens.push(token);
+    }
+
+    // SELECT, *, FROM, users → 4 个有效 token（不含 Eof）
+    assert_eq!(tokens.len(), 4);
+    assert_eq!(tokens[0], sqlrustgo::Token::Select);
+    assert_eq!(tokens[1], sqlrustgo::Token::Star);
+    assert_eq!(tokens[2], sqlrustgo::Token::From);
+    assert_eq!(
+        tokens[3],
+        sqlrustgo::Token::Identifier("users".to_string())
+    );
+}
+
+#[test]
+fn test_end_to_end_insert() {
+    let sql = "INSERT INTO users VALUES (1, 'Alice')";
+    let mut lexer = sqlrustgo::Lexer::new(sql);
+
+    let mut tokens = Vec::new();
+    loop {
+        let token = lexer.next_token();
+        if token == sqlrustgo::Token::Eof {
+            break;
+        }
+        tokens.push(token);
+    }
+
+    // INSERT, INTO, users, VALUES, (, 1, ,, 'Alice', ) → 9 个有效 token
+    assert_eq!(tokens.len(), 9);
+    assert_eq!(tokens[0], sqlrustgo::Token::Insert);
+    assert_eq!(tokens[1], sqlrustgo::Token::Into);
+}
+
+#[test]
+fn test_end_to_end_complex_query() {
+    let sql = "SELECT id, name FROM users WHERE age > 18";
+    let mut lexer = sqlrustgo::Lexer::new(sql);
+
+    let mut tokens = Vec::new();
+    loop {
+        let token = lexer.next_token();
+        if token == sqlrustgo::Token::Eof {
+            break;
+        }
+        tokens.push(token);
+    }
+
+    // SELECT, id, ',', name, FROM, users, WHERE, age, >, 18 → 10 个有效 token
+    assert_eq!(tokens[0], sqlrustgo::Token::Select);
+    assert_eq!(tokens[4], sqlrustgo::Token::From);
+    assert_eq!(tokens[6], sqlrustgo::Token::Where);
 }

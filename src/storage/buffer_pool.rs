@@ -102,7 +102,7 @@ impl BufferPool {
 
     /// Insert a page with LRU eviction
     pub fn insert(&self, page: Arc<Page>) {
-        let page_id = page.page_id();
+        let page_id = page.page_id;
 
         let mut pages = self.pages.lock().unwrap();
         let mut lru = self.lru.lock().unwrap();
@@ -286,7 +286,7 @@ mod tests {
         pool.insert(page);
         let retrieved = pool.get(1);
         assert!(retrieved.is_some());
-        assert_eq!(retrieved.unwrap().page_id(), 1);
+        assert_eq!(retrieved.unwrap().page_id, 1);
     }
 
     #[test]
@@ -393,7 +393,7 @@ mod tests {
     fn test_memory_pool_wrong_size() {
         let pool = MemoryPool::new(1024);
 
-        let mut buf = vec![0u8; 2048];
+        let buf = vec![0u8; 2048];
         pool.free(buf); // Wrong size, should not be pooled
 
         assert_eq!(pool.free_count(), 0);

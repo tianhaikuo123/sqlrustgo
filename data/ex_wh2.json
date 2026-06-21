@@ -1,0 +1,41 @@
+{
+  "name": "ex_wh2",
+  "columns": [
+    {
+      "name": "id",
+      "data_type": "INTEGER",
+      "nullable": true
+    },
+    {
+      "name": "name",
+      "data_type": "TEXT",
+      "nullable": true
+    }
+  ],
+  "rows": [
+    [
+      {
+        "Integer": 1
+      },
+      {
+        "Text": "Alice"
+      }
+    ],
+    [
+      {
+        "Integer": 2
+      },
+      {
+        "Text": "Bob"
+      }
+    ],
+    [
+      {
+        "Integer": 3
+      },
+      {
+        "Text": "Charlie"
+      }
+    ]
+  ]
+}
