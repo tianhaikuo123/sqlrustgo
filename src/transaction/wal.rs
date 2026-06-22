@@ -299,35 +299,42 @@ mod tests {
     use super::*;
     use std::fs;
 
-    fn cleanup(path: &str) {
-        fs::remove_file(path).ok();
+    fn temp_path(name: &str) -> String {
+        std::env::temp_dir()
+            .join(name)
+            .to_string_lossy()
+            .to_string()
+    }
+
+    fn cleanup(p: &str) {
+        fs::remove_file(p).ok();
     }
 
     #[test]
     fn test_wal_append() {
-        let path = "/tmp/wal_test_append.log";
-        cleanup(path);
+        let path = temp_path("wal_test_append.log");
+        cleanup(&path);
 
-        let wal = WriteAheadLog::new(path).unwrap();
+        let wal = WriteAheadLog::new(&path).unwrap();
         wal.append(&WalRecord::Begin { tx_id: 1 }).unwrap();
 
         let records = wal.read_all().unwrap();
         assert!(!records.is_empty());
 
-        cleanup(path);
+        cleanup(&path);
     }
 
     #[test]
     fn test_wal_group_commit() {
-        let path = "/tmp/wal_test_group.log";
-        cleanup(path);
+        let path = temp_path("wal_test_group.log");
+        cleanup(&path);
 
         let config = WalConfig {
             batch_size: 3,
             flush_timeout_ms: 100,
             buffer_size: 10,
         };
-        let wal = WriteAheadLog::with_config(path, config).unwrap();
+        let wal = WriteAheadLog::with_config(&path, config).unwrap();
 
         // Append multiple commits
         for i in 1..=5 {
@@ -341,15 +348,15 @@ mod tests {
         let stats = wal.stats();
         assert!(stats.flush_count > 0);
 
-        cleanup(path);
+        cleanup(&path);
     }
 
     #[test]
     fn test_wal_stats() {
-        let path = "/tmp/wal_test_stats.log";
-        cleanup(path);
+        let path = temp_path("wal_test_stats.log");
+        cleanup(&path);
 
-        let wal = WriteAheadLog::new(path).unwrap();
+        let wal = WriteAheadLog::new(&path).unwrap();
 
         wal.append(&WalRecord::Begin { tx_id: 1 }).unwrap();
         wal.append(&WalRecord::Commit { tx_id: 1 }).unwrap();
@@ -357,15 +364,15 @@ mod tests {
         let stats = wal.stats();
         assert!(stats.total_records > 0);
 
-        cleanup(path);
+        cleanup(&path);
     }
 
     #[test]
     fn test_wal_buffer() {
-        let path = "/tmp/wal_test_buffer.log";
-        cleanup(path);
+        let path = temp_path("wal_test_buffer.log");
+        cleanup(&path);
 
-        let wal = WriteAheadLog::new(path).unwrap();
+        let wal = WriteAheadLog::new(&path).unwrap();
 
         wal.append(&WalRecord::Begin { tx_id: 1 }).unwrap();
         assert_eq!(wal.buffer_len(), 1);
@@ -373,15 +380,15 @@ mod tests {
         wal.flush().unwrap();
         assert_eq!(wal.buffer_len(), 0);
 
-        cleanup(path);
+        cleanup(&path);
     }
 
     #[test]
     fn test_wal_sync() {
-        let path = "/tmp/wal_test_sync.log";
-        cleanup(path);
+        let path = temp_path("wal_test_sync.log");
+        cleanup(&path);
 
-        let wal = WriteAheadLog::new(path).unwrap();
+        let wal = WriteAheadLog::new(&path).unwrap();
 
         wal.append_sync(&WalRecord::Begin { tx_id: 1 }).unwrap();
         wal.append_sync(&WalRecord::Commit { tx_id: 1 }).unwrap();
@@ -389,6 +396,6 @@ mod tests {
         let records = wal.read_all().unwrap();
         assert_eq!(records.len(), 2);
 
-        cleanup(path);
+        cleanup(&path);
     }
 }

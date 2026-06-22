@@ -144,27 +144,34 @@ impl TransactionManager {
 mod tests {
     use super::*;
 
+    fn temp_path(name: &str) -> String {
+        std::env::temp_dir()
+            .join(name)
+            .to_string_lossy()
+            .to_string()
+    }
+
     #[test]
     fn test_transaction_begin() {
-        let path = "/tmp/tm_test_begin.log";
-        std::fs::remove_file(path).ok();
+        let path = temp_path("tm_test_begin.log");
+        std::fs::remove_file(&path).ok();
 
-        let wal = Arc::new(WriteAheadLog::new(path).unwrap());
+        let wal = Arc::new(WriteAheadLog::new(&path).unwrap());
         let tm = TransactionManager::new(wal);
 
         let tx_id = tm.begin().unwrap();
         assert_eq!(tx_id, 1);
         assert!(tm.is_active(1));
 
-        std::fs::remove_file(path).ok();
+        std::fs::remove_file(&path).ok();
     }
 
     #[test]
     fn test_transaction_commit() {
-        let path = "/tmp/tm_test_commit.log";
-        std::fs::remove_file(path).ok();
+        let path = temp_path("tm_test_commit.log");
+        std::fs::remove_file(&path).ok();
 
-        let wal = Arc::new(WriteAheadLog::new(path).unwrap());
+        let wal = Arc::new(WriteAheadLog::new(&path).unwrap());
         let tm = TransactionManager::new(wal);
 
         let tx_id = tm.begin().unwrap();
@@ -172,15 +179,15 @@ mod tests {
 
         assert!(!tm.is_active(tx_id));
 
-        std::fs::remove_file(path).ok();
+        std::fs::remove_file(&path).ok();
     }
 
     #[test]
     fn test_transaction_rollback() {
-        let path = "/tmp/tm_test_rollback.log";
-        std::fs::remove_file(path).ok();
+        let path = temp_path("tm_test_rollback.log");
+        std::fs::remove_file(&path).ok();
 
-        let wal = Arc::new(WriteAheadLog::new(path).unwrap());
+        let wal = Arc::new(WriteAheadLog::new(&path).unwrap());
         let tm = TransactionManager::new(wal);
 
         let tx_id = tm.begin().unwrap();
@@ -188,15 +195,15 @@ mod tests {
 
         assert!(!tm.is_active(tx_id));
 
-        std::fs::remove_file(path).ok();
+        std::fs::remove_file(&path).ok();
     }
 
     #[test]
     fn test_transaction_manager() {
-        let path = "/tmp/test_tx.log";
-        std::fs::remove_file(path).ok();
+        let path = temp_path("test_tx.log");
+        std::fs::remove_file(&path).ok();
 
-        let wal = Arc::new(WriteAheadLog::new(path).unwrap());
+        let wal = Arc::new(WriteAheadLog::new(&path).unwrap());
         let tm = TransactionManager::new(wal);
 
         // Begin transaction
@@ -207,15 +214,15 @@ mod tests {
         tm.commit(tx_id).unwrap();
         assert!(!tm.is_active(tx_id));
 
-        std::fs::remove_file(path).ok();
+        std::fs::remove_file(&path).ok();
     }
 
     #[test]
     fn test_transaction_rollback_non_active() {
-        let path = "/tmp/tm_test_rollback_nonactive.log";
-        std::fs::remove_file(path).ok();
+        let path = temp_path("tm_test_rollback_nonactive.log");
+        std::fs::remove_file(&path).ok();
 
-        let wal = Arc::new(WriteAheadLog::new(path).unwrap());
+        let wal = Arc::new(WriteAheadLog::new(&path).unwrap());
         let tm = TransactionManager::new(wal);
 
         let tx_id = tm.begin().unwrap();
@@ -226,15 +233,15 @@ mod tests {
         assert!(result.is_err());
         assert!(result.unwrap_err().contains("not found"));
 
-        std::fs::remove_file(path).ok();
+        std::fs::remove_file(&path).ok();
     }
 
     #[test]
     fn test_transaction_commit_non_active() {
-        let path = "/tmp/tm_test_commit_nonactive.log";
-        std::fs::remove_file(path).ok();
+        let path = temp_path("tm_test_commit_nonactive.log");
+        std::fs::remove_file(&path).ok();
 
-        let wal = Arc::new(WriteAheadLog::new(path).unwrap());
+        let wal = Arc::new(WriteAheadLog::new(&path).unwrap());
         let tm = TransactionManager::new(wal);
 
         let tx_id = tm.begin().unwrap();
@@ -245,6 +252,6 @@ mod tests {
         assert!(result.is_err());
         assert!(result.unwrap_err().contains("not found"));
 
-        std::fs::remove_file(path).ok();
+        std::fs::remove_file(&path).ok();
     }
 }
