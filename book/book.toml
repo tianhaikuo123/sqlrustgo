@@ -1,0 +1,19 @@
+[book]
+authors = ["赵天海"]
+language = "en"
+multilingual = false
+src = "src"
+title = "SQLRustGo Documentation"
+
+[build]
+build-dir = "book-html"
+create-missing = true
+
+[output.html]
+mathjax-support = true
+git-repository-url = "https://github.com/tianhaikuo123/sqlrustgo"
+edit-url-template = "https://github.com/tianhaikuo123/sqlrustgo/edit/main/book/{path}"
+
+[output.html.fold]
+enable = true
+level = 1
