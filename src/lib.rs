@@ -103,4 +103,19 @@ mod tests {
 // PR practice function for Week 10 
 pub fn test_pr() -> &'static str { 
     "PR workflow is working!" 
- }
+}
+
+/// PR demo function — Experiment 10: PR Workflow Practice
+pub fn pr_demo() -> &'static str {
+    "PR workflow test"
+}
+
+#[cfg(test)]
+mod pr_tests {
+    use super::*;
+
+    #[test]
+    fn test_pr_demo() {
+        assert_eq!(pr_demo(), "PR workflow test");
+    }
+}
