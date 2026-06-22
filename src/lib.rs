@@ -84,10 +84,13 @@ mod tests {
     fn test_transaction() {
         use std::sync::Arc;
 
-        let path = "/tmp/lib_test_wal.log";
-        std::fs::remove_file(path).ok();
+        let path = std::env::temp_dir()
+            .join("lib_test_wal.log")
+            .to_string_lossy()
+            .to_string();
+        std::fs::remove_file(&path).ok();
 
-        let wal = Arc::new(WriteAheadLog::new(path).unwrap());
+        let wal = Arc::new(WriteAheadLog::new(&path).unwrap());
         let tm = TransactionManager::new(wal);
 
         let tx_id = tm.begin().unwrap();
@@ -96,26 +99,11 @@ mod tests {
         tm.commit(tx_id).unwrap();
         assert!(!tm.is_active(tx_id));
 
-        std::fs::remove_file(path).ok();
+        std::fs::remove_file(&path).ok();
     }
 }
 
 // PR practice function for Week 10 
 pub fn test_pr() -> &'static str { 
     "PR workflow is working!" 
-}
-
-/// PR demo function — Experiment 10: PR Workflow Practice
-pub fn pr_demo() -> &'static str {
-    "PR workflow test"
-}
-
-#[cfg(test)]
-mod pr_tests {
-    use super::*;
-
-    #[test]
-    fn test_pr_demo() {
-        assert_eq!(pr_demo(), "PR workflow test");
-    }
-}
+ }
