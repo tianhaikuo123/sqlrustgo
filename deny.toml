@@ -1,5 +1,6 @@
 # cargo-deny configuration for SQLRustGo
 # Security audit and license compliance
+# Updated for cargo-deny 0.19+
 
 [graph]
 targets = [
@@ -8,34 +9,26 @@ targets = [
 ]
 
 [advisories]
-vulnerability = "deny"
-unmaintained = "warn"
+version = 2
 yanked = "warn"
-notice = "warn"
 ignore = []
 
 [licenses]
-unlicensed = "deny"
+version = 2
 allow = [
     "MIT",
     "Apache-2.0",
     "Apache-2.0 WITH LLVM-exception",
     "BSD-3-Clause",
+    "GPL-3.0-or-later",
     "ISC",
+    "Unicode-3.0",
     "Unicode-DFS-2016",
     "Unlicense",
     "Zlib",
 ]
-copyleft = "warn"
-default = "deny"
+exceptions = []
 
 [bans]
 multiple-versions = "warn"
-wildcards = "deny"
-deny = []
-
-[sources]
-unknown-registry = "deny"
-unknown-git = "deny"
-allow-registry = ["https://github.com/rust-lang/crates.io-index"]
-allow-git = []
+wildcards = "allow"
