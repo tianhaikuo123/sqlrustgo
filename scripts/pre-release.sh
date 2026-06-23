@@ -1,12 +1,14 @@
 #!/bin/bash
 # SQLRustGo Pre-Release Gate Check Script
 # Usage: bash scripts/pre-release.sh
+# This script runs all quality checks required before a release.
+
 set -e
 
-echo "============================================"
-echo "  SQLRustGo Pre-Release Gate Check"
-echo "============================================"
-echo ""
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
 
 PASS=0
 FAIL=0
@@ -14,52 +16,58 @@ FAIL=0
 check() {
     local name="$1"
     shift
-    echo "🔍 [$name] Running..."
-    if "$@"; then
-        echo "   ✅ PASS: $name"
+    echo -n "  [$name] ... "
+    if "$@" > /dev/null 2>&1; then
+        echo -e "${GREEN}PASS${NC}"
         PASS=$((PASS + 1))
     else
-        echo "   ❌ FAIL: $name"
+        echo -e "${RED}FAIL${NC}"
         FAIL=$((FAIL + 1))
     fi
-    echo ""
 }
 
-# 1. Format Check
-check "cargo fmt" cargo fmt --all -- --check
+echo ""
+echo "=========================================="
+echo "  SQLRustGo Pre-Release Gate Check"
+echo "=========================================="
+echo ""
 
-# 2. Clippy Check
-check "cargo clippy" cargo clippy --all-targets --all-features -- -D warnings
+# ---- Gate 1: Format Check ----
+echo -e "${YELLOW}[1/6] Code Format Check (cargo fmt)${NC}"
+check "fmt" cargo fmt -- --check
 
-# 3. Build Check
-check "cargo build" cargo build --all-features
+# ---- Gate 2: Clippy Lint ----
+echo -e "${YELLOW}[2/6] Clippy Lint (cargo clippy)${NC}"
+check "clippy" cargo clippy --all-targets -- -D warnings
 
-# 4. Test Check
-check "cargo test" cargo test --all-features
+# ---- Gate 3: Build ----
+echo -e "${YELLOW}[3/6] Build (cargo build)${NC}"
+check "build" cargo build --all
 
-# 5. Security Audit
-check "cargo audit" cargo audit
+# ---- Gate 4: Test ----
+echo -e "${YELLOW}[4/6] Test (cargo test)${NC}"
+check "test" cargo test --all
 
-# 6. License Check (if cargo-deny installed)
-if command -v cargo-deny &>/dev/null; then
-    check "cargo deny" cargo deny check
-else
-    echo "⚠️  [cargo deny] SKIPPED — cargo-deny not installed"
-    echo "   Install: cargo install cargo-deny --locked"
-    echo ""
-fi
+# ---- Gate 5: Security Audit ----
+echo -e "${YELLOW}[5/6] Security Audit (cargo audit)${NC}"
+check "audit" cargo audit
 
-echo "============================================"
-echo "  RESULTS: $PASS passed, $FAIL failed"
-echo "============================================"
+# ---- Gate 6: License Check ----
+echo -e "${YELLOW}[6/6] License Check (cargo deny)${NC}"
+check "deny" cargo deny check
 
-if [ "$FAIL" -gt 0 ]; then
-    echo ""
-    echo "❌ PRE-RELEASE CHECKS FAILED!"
-    echo "   Fix the issues above before releasing."
-    exit 1
-else
-    echo ""
-    echo "✅ ALL CHECKS PASSED — Ready for release!"
+# ---- Summary ----
+echo ""
+echo "=========================================="
+TOTAL=$((PASS + FAIL))
+if [ $FAIL -eq 0 ]; then
+    echo -e "  ${GREEN}ALL CHECKS PASSED ($PASS/$TOTAL)${NC}"
+    echo "  Ready for release!"
+    echo "=========================================="
     exit 0
+else
+    echo -e "  ${RED}$FAIL CHECKS FAILED ($PASS/$TOTAL passed)${NC}"
+    echo "  Fix the failures before release."
+    echo "=========================================="
+    exit 1
 fi

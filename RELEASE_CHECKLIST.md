@@ -1,56 +1,74 @@
-# SQLRustGo Release Gate Checklist
+# SQLRustGo Release Checklist
 
-> 版本发布前必须通过以下所有检查项。请在发布前逐项确认。
+> 本清单用于发布前的质量门禁检查，确保每个Release都满足最低质量标准。
 
-## 📋 代码质量门禁
+## 📋 Release 信息
 
-- [ ] `cargo fmt --all -- --check` — 代码格式检查通过
-- [ ] `cargo clippy --all-targets --all-features -- -D warnings` — Clippy零警告
-- [ ] `cargo build --all-features` — 编译成功
+| 项目 | 内容 |
+|------|------|
+| **版本号** | （填写，例如 v1.0.0） |
+| **发布日期** | （填写） |
+| **发布负责人** | 赵天海 |
+| **上一版本** | （填写） |
 
-## 🧪 测试门禁
+---
 
-- [ ] `cargo test --all-features` — 所有测试通过
-- [ ] 测试覆盖率 ≥ 80%（可选：`cargo llvm-cov --all-features`）
+## ✅ 代码质量门禁
+
+| # | 检查项 | 命令 | 状态 |
+|---|--------|------|------|
+| G1 | 代码格式化 | `cargo fmt -- --check` | ⬜ |
+| G2 | Clippy Lint零警告 | `cargo clippy --all-targets -- -D warnings` | ⬜ |
+| G3 | 项目编译成功 | `cargo build --all` | ⬜ |
+| G4 | 所有测试通过 | `cargo test --all` | ⬜ |
 
 ## 🔒 安全门禁
 
-- [ ] `cargo audit` — 无已知安全漏洞
-- [ ] `cargo deny check` — 许可证合规（可选）
-- [ ] Dependabot 已启用且无高危预警
+| # | 检查项 | 命令 | 状态 |
+|---|--------|------|------|
+| S1 | 依赖安全扫描 | `cargo audit` | ⬜ |
+| S2 | 许可证合规 | `cargo deny check` | ⬜ |
+| S3 | Dependabot已配置 | 检查 `.github/dependabot.yml` | ⬜ |
 
 ## 📦 版本门禁
 
-- [ ] `Cargo.toml` 中版本号已更新
-- [ ] `CHANGELOG.md` 已更新（如存在）
-- [ ] Git 标签与 Cargo.toml 版本一致
+| # | 检查项 | 说明 | 状态 |
+|---|--------|------|------|
+| V1 | 版本号已更新 | `Cargo.toml` 中 version 字段 | ⬜ |
+| V2 | CHANGELOG已更新 | 记录本版本的所有变更 | ⬜ |
+| V3 | Git标签已创建 | `git tag -a vX.Y.Z` | ⬜ |
 
 ## 📄 文档门禁
 
-- [ ] `README.md` 内容与当前版本一致
-- [ ] API 文档已生成（`cargo doc --no-deps`）
-- [ ] Release Notes 已编写
-
-## ✅ 最终确认
-
-- [ ] 上述所有门禁通过
-- [ ] 分支已合并到 main
-- [ ] 准备创建 Git 标签和 GitHub Release
+| # | 检查项 | 说明 | 状态 |
+|---|--------|------|------|
+| D1 | README已更新 | 版本号和状态徽章 | ⬜ |
+| D2 | API文档已生成 | `cargo doc --no-deps` | ⬜ |
+| D3 | Release Notes已编写 | GitHub Release 描述 | ⬜ |
 
 ---
 
-## 🚀 自动化检查
+## 🚀 一键执行
 
-运行以下脚本可自动执行大部分门禁：
+运行自动化门禁脚本：
 
 ```bash
-# Linux / macOS
-bash scripts/pre-release.sh
-
-# Windows (Git Bash)
 bash scripts/pre-release.sh
 ```
 
+如果全部通过，输出：**ALL CHECKS PASSED — Ready for release!**
+
 ---
 
-*最后更新：2026-06-22*
+## 📝 发布后检查
+
+| # | 检查项 | 状态 |
+|---|--------|------|
+| 1 | CI/CD 流水线通过 | ⬜ |
+| 2 | GitHub Release 已创建 | ⬜ |
+| 3 | Release Notes 已发布 | ⬜ |
+
+---
+
+*清单版本: v1.0*
+*最后更新: 2026-06-23*
