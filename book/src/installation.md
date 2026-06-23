@@ -1,31 +1,45 @@
-# Installation
+# 安装指南
 
-## Prerequisites
+## 环境要求
 
-- **Rust** 1.75+ ([install](https://rustup.rs))
-- **Git** 2.x
+| 项目 | 最低要求 |
+|------|----------|
+| Rust | 1.75+ |
+| 内存 | 4GB+ |
+| 磁盘 | 1GB+ |
 
-## Build from Source
+## 安装步骤
+
+### 1. 克隆项目
 
 ```bash
-# Clone the repository
 git clone https://github.com/tianhaikuo123/sqlrustgo.git
 cd sqlrustgo
-
-# Build
-cargo build --release
-
-# Run tests
-cargo test
-
-# Start REPL
-cargo run --bin sqlrustgo
 ```
 
-## Verify Installation
+### 2. 编译
+
+```bash
+cargo build --all-features
+```
+
+### 3. 运行测试
 
 ```bash
 cargo test --all-features
 ```
 
-All 73+ tests should pass.
+### 4. 启动 REPL
+
+```bash
+cargo run --bin sqlrustgo
+```
+
+## 验证安装
+
+启动后应看到：
+```
+SQLRustGo v1.0.0
+Type "help" for more information.
+sql>
+```

@@ -1,39 +1,43 @@
-# Architecture
+# 架构设计
 
-SQLRustGo follows a layered architecture:
+## 系统架构
 
 ```
-┌─────────────────────────────┐
-│         REPL / Network       │  ← User Interface
-├─────────────────────────────┤
-│         Parser / Lexer       │  ← SQL → AST
-├─────────────────────────────┤
-│         Planner              │  ← Logical → Physical Plan
-├─────────────────────────────┤
-│         Executor             │  ← Query Execution
-├─────────────────────────────┤
-│         Storage Engine       │  ← Page, BufferPool, B+Tree
-├─────────────────────────────┤
-│         Transaction (WAL)    │  ← ACID, WAL
-└─────────────────────────────┘
+┌─────────────────────────────────────┐
+│           main.rs (REPL)             │
+├─────────────────────────────────────┤
+│           executor/                 │  ← 查询执行
+├─────────────────────────────────────┤
+│           parser/                    │  ← SQL → AST
+│           lexer/                    │  ← SQL → Tokens
+├─────────────────────────────────────┤
+│           storage/                   │  ← Page, BufferPool, B+ Tree
+├─────────────────────────────────────┤
+│         transaction/                 │  ← WAL, TxManager
+├─────────────────────────────────────┤
+│           network/                   │  ← TCP Server/Client
+├─────────────────────────────────────┤
+│           types/                     │  ← Value, SqlError
+└─────────────────────────────────────┘
 ```
 
-## Modules
+## 模块说明
 
-| Module | Path | Description |
-|--------|------|-------------|
-| `lexer` | `src/lexer/` | Tokenizes SQL strings |
-| `parser` | `src/parser/` | Parses tokens into AST |
-| `planner` | `src/planner/` | Query planning and optimization |
-| `executor` | `src/executor/` | Executes query plans |
-| `storage` | `src/storage/` | Page, BufferPool, B+Tree, FileStorage |
-| `transaction` | `src/transaction/` | WAL and transaction manager |
-| `network` | `src/network/` | TCP server/client |
-| `types` | `src/types/` | Value types and errors |
+### Lexer（词法分析器）
+将SQL文本转换为Token流。支持关键字、标识符、字面量、运算符的识别。
 
-## Storage Engine
+### Parser（语法分析器）
+将Token流解析为AST（抽象语法树）。支持SELECT/INSERT/UPDATE/DELETE/CREATE/DROP语句。
 
-- **Page**: 4KB fixed-size data pages
-- **BufferPool**: In-memory LRU cache for pages
-- **DiskManager**: File-based persistent storage
-- **B+Tree**: Index structure for efficient lookups
+### Executor（执行器）
+执行AST并返回结果。包含TableScan、Filter、Projection等算子的实现。
+
+### Storage（存储引擎）
+- **Page**: 4KB固定大小数据页
+- **BufferPool**: LRU缓存淘汰策略的缓冲区管理器
+- **B+ Tree**: 索引结构
+- **DiskManager**: 磁盘文件读写
+
+### Transaction（事务管理）
+- **WriteAheadLog (WAL)**: 先写日志保证事务持久性
+- **TransactionManager**: 管理事务的BEGIN/COMMIT/ROLLBACK

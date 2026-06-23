@@ -1,19 +1,12 @@
 [book]
-authors = ["赵天海"]
-language = "en"
-multilingual = false
-src = "src"
 title = "SQLRustGo Documentation"
+authors = ["赵天海"]
+description = "SQLRustGo - A Rust-implemented SQL-92 Database System"
+language = "zh-CN"
 
 [build]
-build-dir = "book-html"
+build-dir = "docs/book"
 create-missing = true
 
 [output.html]
-mathjax-support = true
-git-repository-url = "https://github.com/tianhaikuo123/sqlrustgo"
-edit-url-template = "https://github.com/tianhaikuo123/sqlrustgo/edit/main/book/{path}"
-
-[output.html.fold]
-enable = true
-level = 1
+no-section-label = true

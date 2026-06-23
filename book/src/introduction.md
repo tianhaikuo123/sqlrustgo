@@ -1,27 +1,18 @@
-# SQLRustGo — Introduction
+# SQLRustGo 简介
 
-**SQLRustGo** is a lightweight relational database system implemented in Rust. It supports a subset of the SQL-92 standard and serves as an educational project for understanding database internals.
+SQLRustGo 是一个使用 Rust 从零实现的 SQL-92 子集兼容的关系型数据库系统。
 
-## Key Features
+## 核心特性
 
-| Feature | Description |
-|---------|-------------|
-| SQL-92 Support | SELECT, INSERT, UPDATE, DELETE, CREATE TABLE, DROP TABLE |
-| Storage Engine | Page-based storage with BufferPool and LRU eviction |
-| B+ Tree Index | Efficient key-value lookups |
-| Transaction Support | Write-Ahead Log (WAL) for ACID compliance |
-| Network Protocol | TCP server with MySQL-style protocol |
-| Interactive REPL | Command-line SQL interface |
+- **SQL-92 支持**: SELECT, INSERT, UPDATE, DELETE, CREATE TABLE, DROP TABLE
+- **存储引擎**: 页式存储（4KB页）+ BufferPool 缓存 + B+ Tree 索引
+- **事务支持**: ACID 事务，通过 Write-Ahead Log (WAL) 实现
+- **网络协议**: MySQL 风格协议支持 TCP 连接
+- **交互式 REPL**: 支持交互式 SQL 命令行
 
-## Project Status
+## 项目状态
 
-- **Version**: v1.0.0
-- **Test Coverage**: 92.5%
-- **Tests**: 73+ passing
-- **Maturity**: L3 Product Ready
-
-## Quick Links
-
-- [GitHub Repository](https://github.com/tianhaikuo123/sqlrustgo)
-- [Installation Guide](./installation.md)
-- [SQL Reference](./sql-reference.md)
+- 版本: v1.0.0
+- 测试覆盖率: 92.5%
+- 测试数量: 73+ 项
+- Rust Edition: 2024

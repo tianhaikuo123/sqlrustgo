@@ -1,70 +1,37 @@
-# API Reference
+# API 文档
 
-Generate full API documentation with:
+## 生成 API 文档
 
 ```bash
 cargo doc --no-deps --open
 ```
 
-## Core Types
+## 核心模块
 
-### Value
-
-```rust
-pub enum Value {
-    Integer(i64),
-    Float(f64),
-    Text(String),
-    Boolean(bool),
-    Null,
-    Blob(Vec<u8>),
-}
-```
-
-### Statement
+### sqlrustgo 库入口
 
 ```rust
-pub enum Statement {
-    Select(SelectStatement),
-    Insert(InsertStatement),
-    Update(UpdateStatement),
-    Delete(DeleteStatement),
-    CreateTable(CreateTableStatement),
-    DropTable(DropTableStatement),
-    Begin,
-    Commit,
-    Rollback,
-}
+// src/lib.rs
+pub mod lexer;      // 词法分析
+pub mod parser;     // 语法分析
+pub mod executor;   // 查询执行
+pub mod storage;    // 存储引擎
+pub mod transaction; // 事务管理
+pub mod types;      // 类型系统
+
+pub fn init();      // 初始化数据库
+pub fn pr_demo() -> &'static str;  // PR演示函数
 ```
 
-## Public API
+### 关键类型
 
-```rust
-use sqlrustgo::*;
+| 类型 | 所在模块 | 说明 |
+|------|----------|------|
+| `Token` | `lexer` | SQL Token 枚举 |
+| `Statement` | `parser` | SQL 语句 AST |
+| `Value` | `types` | 数据类型枚举 |
+| `Page` | `storage` | 4KB 数据页 |
+| `BufferPool` | `storage` | LRU 缓存管理器 |
+| `WriteAheadLog` | `transaction` | WAL 事务日志 |
 
-// Initialize
-init();
-
-// Tokenize SQL
-let tokens = tokenize("SELECT * FROM users");
-
-// Parse SQL
-let stmt = parse("SELECT * FROM users").unwrap();
-
-// Execute
-let mut engine = ExecutionEngine::new();
-let result = engine.execute(stmt);
-```
-
-## Storage API
-
-```rust
-use sqlrustgo::storage::{Page, BufferPool, BPlusTree};
-
-let page = Page::new(1);
-let mut pool = BufferPool::new(10);
-pool.add_page(page).unwrap();
-
-let mut tree = BPlusTree::new();
-tree.insert(10, 100);
-```
+完整的 API 文档请使用 `cargo doc --open` 在浏览器中查看。
